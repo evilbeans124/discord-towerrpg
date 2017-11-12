@@ -4,6 +4,8 @@ import os
 
 from classes.Player import Player
 
+#more of an event handler class than anything
+
 player = None
 logged_in = False
 
@@ -74,6 +76,13 @@ async def getStatsEvent():
         return None
     else:
         await.client.send_message(message.channel, "You are not logged in.")
+
+@client.event
+async def lookForBattle():
+    if logged_in:
+        return None
+    else:
+        await.client.send_message(message.channel, "You are not logged in.")
     
 @client.event
 async def on_message(message):
@@ -91,8 +100,8 @@ async def on_message(message):
         await classInfoEvent()
     elif message.content.startswith('!stats'):
         await getStatsEvent()
-
-    
+    elif message.content.startswith('!battle'):
+        await lookForBattle()
 
 
 
