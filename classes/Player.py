@@ -2,6 +2,8 @@ import os
 import discord
 import asyncio
 
+from class.Classes import Classes
+
 class Player:
     current_hp = None
     max_hp = None
@@ -29,7 +31,9 @@ class Player:
     critical_damage_multiplier = None #both mag and phy
     block_chance = None #only works with shields, 100% = all blocked
     dodge_chance = None #100% = all dodged
+    
     class_id = None #1 = Warrior 2 = Ranger 3 = Mage
+    client_user_id = None #client's id
 
     def __init__(newUser, c, client.user.id):
         if newUser:
@@ -57,9 +61,11 @@ class Player:
             critical_damage_multiplier = 0
             block_chance = 0
             dodge_chance = 0
-            class_id = ??????????/#NOT SURE YET LOL
             
-            updateFile(client.user.id)
+            class_id = 0 #NOT SURE YET LOL
+            client_user_id = client.user.id #probably not the best way to go but i'll fix it.
+            
+            updateFile(client_user_id)
         else:
             current_hp = c[0]
             max_hp = c[1]
@@ -77,15 +83,17 @@ class Player:
             spell_power = c[11]
             attack_power = c[12]
             physical_defense = c[13]
-            speed = c[14]
-            accuracy = c[15]
-            parry_chance = c[16]
-            critical_chance = c[17]
-            critical_damage_multiplier = c[18]
-            block_chance = c[19]
-            dodge_chance = c[20]
+            magical_defense = c[14]
+            speed = c[15]
+            accuracy = c[16]
+            parry_chance = c[17]
+            critical_chance = c[18]
+            critical_damage_multiplier = c[19]
+            block_chance = c[20]
+            dodge_chance = c[21]
 
-            class_id = c[21]
+            class_id = c[22]
+            client_user_id = c[23]
 
     def increase_level(self):
         level++
@@ -106,6 +114,9 @@ class Player:
     def newExperienceToLevel(self):
         experienceToLevel *= 2
 
+    def setClass(self, classs): #tbh i have no idea if this will actually work
+        self.class_id = classs.getId()
+
     def updateFile(self, client.user.id):
         filepath = os.path.join('/Users/orion01px2018/Desktop/disc/player_files', client.user.id + '.txt')
         
@@ -116,10 +127,46 @@ class Player:
         f.write("\r\n")
         f.write(str(self.gold))
         f.write("\r\n")
+        f.write(str(self.experience))
+        f.write("\r\n")
+        f.write(str(self.experienceToLevel))
+        f.write("\r\n")
         f.write(str(self.level))
         f.write("\r\n")
-        f.write(str(self.experience))
+        f.write(str(self.strength))
         f.write("\r\n")
-        f.write(str(self.experience))
+        f.write(str(self.dexterity))
+        f.write("\r\n")
+        f.write(str(self.intellect))
+        f.write("\r\n")
+        f.write(str(self.hp_regen))
+        f.write("\r\n")
+        f.write(str(self.mp_regen))
+        f.write("\r\n")
+        f.write(str(self.spell_power))
+        f.write("\r\n")
+        f.write(str(self.attack_power))
+        f.write("\r\n")
+        f.write(str(self.physical_defense))
+        f.write("\r\n")
+        f.write(str(self.magical_defense))
+        f.write("\r\n")
+        f.write(str(self.speed))
+        f.write("\r\n")
+        f.write(str(self.accuracy))
+        f.write("\r\n")
+        f.write(str(self.parry_chance))
+        f.write("\r\n")
+        f.write(str(self.critical_chance))
+        f.write("\r\n")
+        f.write(str(self.critical_damage_multiplier))
+        f.write("\r\n")
+        f.write(str(self.block_chance))
+        f.write("\r\n")
+        f.write(str(self.dodge_chance))
+        f.write("\r\n")
+        f.write(str(self.class_id))
+        f.write("\r\n")
+        f.write(str(self.client_user_id))
         f.write("\r\n")
         f.close()
