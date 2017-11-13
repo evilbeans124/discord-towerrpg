@@ -42,6 +42,6 @@ class Mob:
     def __init__(self, mobToCreate): #parameter is string
         if mobToCreate == "boar":
             
-
+    @classmethod
     def getAllMobs(self):
         return allMobs

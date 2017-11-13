@@ -20,7 +20,7 @@ class BoarClass(Classes):
     spell_power = None #magical only
     attack_power = None #physical only
     physical_defense = None
-    magical_defense = None 
+    magical_defense = None
     speed = None #faster speed = first chance in battle
     accuracy = None #affects both physical and magical
     parry_chance = None #100 = all physical attacks will be parryed, only with handheld wep

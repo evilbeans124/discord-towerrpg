@@ -31,5 +31,7 @@ class Classes:
     def getClassName(self):
         return self.allClasses[self.idnum]
 
+    #this should be a class method, but something is calling it right now
+    #fix later
     def getAllClasses(self):
         return self.allClasses
