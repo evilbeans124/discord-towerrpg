@@ -1,10 +1,11 @@
 import discord
 import asyncio
 import os
+import re
 
 from classes.Player import Player
 
-#more of an event handler class than anything
+#more of an event handler class than anything xd
 
 player = None
 logged_in = False
@@ -57,32 +58,37 @@ async def on_ready():
     print('Logged in')
 
 @client.event
-async def classChooseEvent():
+async def classChooseEvent(theMessage):
     if logged_in:
-        return None
+        if c[22] == 0:
+            class_id = int(re.findall('\d+', s)[0])
+            player.setClass(class_id)
+            await client.send_message(message.channel, "You have successfully set the class!") #specify which class later
+        else:
+            await client.send_message(message.channel, "You have already chosen a class! Your current class is ")
     else:
-        await.client.send_message(message.channel, "You are not logged in.")
+        await client.send_message(message.channel, "You are not logged in.")
 
 @client.event
 async def classInfoEvent():
     if logged_in:
         return None
     else:
-        await.client.send_message(message.channel, "You are not logged in.")
+        await client.send_message(message.channel, "You are not logged in.")
 
 @client.event
 async def getStatsEvent():
     if logged_in:
         return None
     else:
-        await.client.send_message(message.channel, "You are not logged in.")
+        await client.send_message(message.channel, "You are not logged in.")
 
 @client.event
 async def lookForBattle():
     if logged_in:
         return None
     else:
-        await.client.send_message(message.channel, "You are not logged in.")
+        await client.send_message(message.channel, "You are not logged in.")
     
 @client.event
 async def on_message(message):
@@ -95,7 +101,7 @@ async def on_message(message):
         else:
             await checkLogin(message)
     elif message.content.startswith('!classchoose'):
-        await classChooseEvent()
+        await classChooseEvent(message)
     elif message.content.startswith('!classes'):
         await classInfoEvent()
     elif message.content.startswith('!stats'):
