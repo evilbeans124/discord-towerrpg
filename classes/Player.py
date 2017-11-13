@@ -34,9 +34,9 @@ class Player:
     
     class_id = None #1 = Warrior 2 = Ranger 3 = Mage
     player_class = None #representation of the player's class. Not stored on the player's file. Will fix this later, right now i have no idea how lol
-    client_user_id = None #client's id
+    message_author_id = None #client's id
 
-    def __init__(self, newUser, c, client_user_id):
+    def __init__(self, newUser, c, message_author_id):
         if newUser:
             self.current_hp = 50
             self.max_hp = 50
@@ -65,9 +65,9 @@ class Player:
             
             self.player_class = Classes(0)
             self.class_id = 0
-            self.client_user_id = client_user_id #probably not the best way to go but i'll fix it.
+            self.message_author_id = message_author_id
             
-            self.updateFile(client_user_id)
+            self.updateFile(self.message_author_id)
         else:
             self.current_hp = c[0]
             self.max_hp = c[1]
@@ -96,17 +96,23 @@ class Player:
 
             self.player_class = Classes(c[22])
             self.class_id = c[22]
-            self.client_user_id = c[23]
+            self.message_author_id = c[23]
 
     def increase_level(self):
         level += 1
         self.experience -= experienceToLevel
 
+        self.updateFile(self.message_author_id)
+
     def decrease_hp(self, hpToDecrease):
         self.current_hp -= hpToDecrease
 
+        self.updateFile(self.message_author_id)
+
     def decrease_exp(self, expToDecrease):
         self.experience -= expToDecrease
+
+        self.updateFile(self.message_author_id)
 
     def increase_experience(self, experienceGained):
         self.experience += experienceGained
@@ -114,18 +120,28 @@ class Player:
             self.increase_level()
             self.newExperienceToLevel()
 
+        self.updateFile(self.message_author_id)
+
     def newExperienceToLevel(self):
         self.experienceToLevel *= 2
 
-    def setClass(self, theClassId): #tbh i have no idea if this will actually work
+        self.updateFile(self.message_author_id)
+
+    def setClass(self, theClassId):
         self.class_id = theClassId
         self.player_class = Classes(theClassId)
+        
+        self.updateFile(self.message_author_id)
+        
+
+    def getClassId(self):
+        return self.class_id
 
     def getClass(self):
-        return class_id
+        return self.player_class
 
-    def updateFile(self, client_user_id): #this both creates and updates the files
-        filepath = os.path.join('/Users/orion01px2018/Desktop/discord-towerrpg/player_files', client_user_id + '.txt')
+    def updateFile(self, message_author_id):
+        filepath = os.path.join('/Users/orion01px2018/Desktop/discord-towerrpg/player_files/', str(message_author_id) + '.txt')
         
         f = open(filepath, "w+")
         f.write(str(self.current_hp))
@@ -174,6 +190,6 @@ class Player:
         f.write("\r\n")
         f.write(str(self.class_id))
         f.write("\r\n")
-        f.write(str(self.client_user_id))
+        f.write(str(self.message_author_id))
         f.write("\r\n")
         f.close()

@@ -30,3 +30,6 @@ class Classes:
 
     def getClassName(self):
         return self.allClasses[self.idnum]
+
+    def getAllClasses(self):
+        return self.allClasses
