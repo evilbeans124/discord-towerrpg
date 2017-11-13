@@ -12,7 +12,7 @@ class Classes:
     
 
     def __init__(self, idnum):#the constructor is basically the createClass function
-        createClass(idnum)
+        self.createClass(idnum)
 
     def getClassId(self):
         return idnum
@@ -20,13 +20,13 @@ class Classes:
     def createClass(self, idnum):
         self.idnum = idnum
         if idnum == 0:
-            self.name = allClasses[0]
+            self.name = self.allClasses[0]
         elif idnum == 1:
-            self.name = allClasses[1]
+            self.name = self.allClasses[1]
         elif idnum == 2:
-            self.name = allClasses[2]
+            self.name = self.allClasses[2]
         elif idnum == 3:
-            self.name = allClasses[3]
+            self.name = self.allClasses[3]
 
     def getClassName(self):
-        return allClasses[self.idnum]
+        return self.allClasses[self.idnum]

@@ -33,10 +33,10 @@ class Player:
     dodge_chance = None #100% = all dodged
     
     class_id = None #1 = Warrior 2 = Ranger 3 = Mage
-    player_class #representation of the player's class. Not stored on the player's file. Will fix this later, right now i have no idea how lol
+    player_class = None #representation of the player's class. Not stored on the player's file. Will fix this later, right now i have no idea how lol
     client_user_id = None #client's id
 
-    def __init__(self, newUser, c, client.user.id):
+    def __init__(self, newUser, c, client_user_id):
         if newUser:
             self.current_hp = 50
             self.max_hp = 50
@@ -65,9 +65,9 @@ class Player:
             
             self.player_class = Classes(0)
             self.class_id = 0
-            self.client_user_id = client.user.id #probably not the best way to go but i'll fix it.
+            self.client_user_id = client_user_id #probably not the best way to go but i'll fix it.
             
-            updateFile(client_user_id)
+            self.updateFile(client_user_id)
         else:
             self.current_hp = c[0]
             self.max_hp = c[1]
@@ -99,7 +99,7 @@ class Player:
             self.client_user_id = c[23]
 
     def increase_level(self):
-        level++
+        level += 1
         self.experience -= experienceToLevel
 
     def decrease_hp(self, hpToDecrease):
@@ -111,18 +111,21 @@ class Player:
     def increase_experience(self, experienceGained):
         self.experience += experienceGained
         while (self.experience >= experienceToLevel):
-            increase_level()
-            newExperienceToLevel()
+            self.increase_level()
+            self.newExperienceToLevel()
 
     def newExperienceToLevel(self):
-        experienceToLevel *= 2
+        self.experienceToLevel *= 2
 
     def setClass(self, theClassId): #tbh i have no idea if this will actually work
         self.class_id = theClassId
         self.player_class = Classes(theClassId)
 
-    def updateFile(self, client.user.id): #this both creates and updates the files
-        filepath = os.path.join('/Users/orion01px2018/Desktop/disc/player_files', client.user.id + '.txt')
+    def getClass(self):
+        return class_id
+
+    def updateFile(self, client_user_id): #this both creates and updates the files
+        filepath = os.path.join('/Users/orion01px2018/Desktop/discord-towerrpg/player_files', client_user_id + '.txt')
         
         f = open(filepath, "w+")
         f.write(str(self.current_hp))

@@ -17,36 +17,39 @@ def read_integers(filename):
         return [int(x) for x in f]
 
 @client.event
-async def newPlayerEvent():
+async def newPlayerEvent(message):
     await client.send_message(message.channel, "Welcome to TowerRPG, a text-based RTS MMORPG on Discord!")
     await asyncio.sleep(2)
     await client.send_message(message.channel, "Please choose your class using the command !classchoose <id>. To read more about each class, do !classes")
 
 @client.event
-async def readLore():
+async def readLore(message):
     await client.send_message(message.channel, "INSERT LORE HERE")
     await asyncio.sleep(2)
     await client.send_message(message.channel, "INSERT LORE HERE")
 
 @client.event
 async def checkRegister(message):
-    filepath = os.path.join('/Users/orion01px2018/Desktop/disc/player_files/', client.user.id + '.txt')
-    if not os.path.exists('/Users/orion01px2018/Desktop/disc/player_files'):
-        os.makedirs('/Users/orion01px2018/Desktop/disc/player_files')
+    filepath = os.path.join('/Users/orion01px2018/Desktop/discord-towerrpg/player_files/', client.user.id + '.txt')
+    if not os.path.exists('/Users/orion01px2018/Desktop/discord-towerrpg/player_files'):
+        os.makedirs('/Users/orion01px2018/Desktop/discord-towerrpg/player_files')
+
+        logged_in = True
 
         await client.send_message(message.channel, "You have sucessfully registered.")
-        await newPlayerEvent()
+        await newPlayerEvent(message)
 
-        player = Player(true, None, client.user.id)
+        player = Player(True, None, client.user.id)
     else:
         await client.send_message(message.channel, "You have already registered before, please do !login instead.")
 
 @client.event
 async def checkLogin(message):
-    filepath = os.path.join('/Users/orion01px2018/Desktop/disc/player_files/', client.user.id + '.txt')
-    if os.path.exists('/Users/orion01px2018/Desktop/disc/player_files'):
+    filepath = os.path.join('/Users/orion01px2018/Desktop/discord-towerrpg/player_files/', client.user.id + '.txt')
+    global logged_in
+    if os.path.exists('/Users/orion01px2018/Desktop/discord-towerrpg/player_files') and logged_in == False:
         c = read_integers(filepath)
-        player = Player(false, c, client.user.id)
+        player = Player(False, c, client.user.id)
 
         logged_in = True
         await client.send_message(message.channel, "You have successfully logged in. Welcome back!")
@@ -58,9 +61,10 @@ async def on_ready():
     print('Logged in')
 
 @client.event
-async def classChooseEvent(theMessage):
+async def classChooseEvent(message):
     if logged_in:
-        if c[22] == 0:
+        global player
+        if player.getClass() == 0:
             class_id = int(re.findall('\d+', s)[0])
             player.setClass(class_id)
             await client.send_message(message.channel, "You have successfully set the class!") #specify which class later
@@ -70,21 +74,21 @@ async def classChooseEvent(theMessage):
         await client.send_message(message.channel, "You are not logged in.")
 
 @client.event
-async def classInfoEvent():
+async def classInfoEvent(message):
     if logged_in:
         return None
     else:
         await client.send_message(message.channel, "You are not logged in.")
 
 @client.event
-async def getStatsEvent():
+async def getStatsEvent(message):
     if logged_in:
         return None
     else:
         await client.send_message(message.channel, "You are not logged in.")
 
 @client.event
-async def lookForBattle():
+async def lookForBattle(message):
     if logged_in:
         return None
     else:
@@ -92,6 +96,7 @@ async def lookForBattle():
     
 @client.event
 async def on_message(message):
+    print(client.user.id)
     if message.content.startswith('!register'):
         await checkRegister(message)
         
@@ -103,11 +108,11 @@ async def on_message(message):
     elif message.content.startswith('!classchoose'):
         await classChooseEvent(message)
     elif message.content.startswith('!classes'):
-        await classInfoEvent()
+        await classInfoEvent(message)
     elif message.content.startswith('!stats'):
-        await getStatsEvent()
+        await getStatsEvent(message)
     elif message.content.startswith('!battle'):
-        await lookForBattle()
+        await lookForBattle(message)
 
 
 
