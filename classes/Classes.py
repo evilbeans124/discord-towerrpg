@@ -9,7 +9,6 @@ class Classes:
     #variables
     name = None
     idnum = None
-    
 
     def __init__(self, idnum):#the constructor is basically the createClass function
         self.createClass(idnum)

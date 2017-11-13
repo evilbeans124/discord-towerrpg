@@ -4,8 +4,10 @@ import os
 import re
 
 from classes.Player import Player
+from classes.Mob import Mob
+from classes.NumbersHandler import NumbersHandler
 
-#more of an event handler class than anything xd
+#more of an event handler class than anything
 
 player = None
 logged_in = False
@@ -19,9 +21,9 @@ def read_integers(filename):
 @client.event
 async def newPlayerEvent(message):
     #await readLore(message)
-    await client.send_message(message.channel, "Welcome to TowerRPG, " + message.author + ". TowerRPG is a text-based RTS MMORPG on Discord!")
+    await client.send_message(message.channel, "Welcome to TowerRPG, " + message.author.name + ". TowerRPG is a text-based RTS MMORPG on Discord!")
     await asyncio.sleep(2)
-    await client.send_message(message.channel, message.author + ", please choose your class using the command !classchoose <id>. To read more about each class, do !classes")
+    await client.send_message(message.channel, message.author.name + ", please choose your class using the command !classchoose <id>. To read more about each class, do !classes")
 
 @client.event
 async def readLore(message):
@@ -34,17 +36,17 @@ async def checkRegister(message):
     global logged_in
     global player
     if logged_in == True:
-        await client.send_message(message.channel, message.author + ", you are already logged in.")
+        await client.send_message(message.channel, message.author.name + ", you are already logged in.")
     else:    
         if os.path.isfile('/Users/orion01px2018/Desktop/discord-towerrpg/player_files/' + str(message.author.id) + '.txt'):
-            await client.send_message(message.channel, message.author + ", you have already registered before, please do !login instead.")
+            await client.send_message(message.channel, message.author.name + ", you have already registered before, please do !login instead.")
         else:
             f = open('/Users/orion01px2018/Desktop/discord-towerrpg/player_files/' + str(message.author.id) + '.txt', "w+")
             f.close()
 
             logged_in = True
 
-            await client.send_message(message.channel, message.author + ", you have sucessfully registered.")
+            await client.send_message(message.channel, message.author.name + ", you have sucessfully registered.")
             await newPlayerEvent(message)
 
             player = Player(True, None, message.author.id)
@@ -54,7 +56,7 @@ async def checkLogin(message):
     global logged_in
     global player
     if logged_in:
-        await client.send_message(message.channel, message.author + ", you are already logged in.")
+        await client.send_message(message.channel, message.author.name + ", you are already logged in.")
     else:
         filepath = '/Users/orion01px2018/Desktop/discord-towerrpg/player_files/' + message.author.id + '.txt'
         if os.path.isfile(filepath):
@@ -62,9 +64,9 @@ async def checkLogin(message):
             player = Player(False, c, message.author.id)
 
             logged_in = True
-            await client.send_message(message.channel, message.author + ", you have successfully logged in. Welcome back!")
+            await client.send_message(message.channel, message.author.name + ", you have successfully logged in. Welcome back!")
         else:
-            await client.send_message(message.channel, message.author + ", you haven't registed yet, please do !register.")
+            await client.send_message(message.channel, message.author.name + ", you haven't registed yet, please do !register.")
 
 @client.event
 async def on_ready():
@@ -76,36 +78,39 @@ async def classChooseEvent(message):
         global player
         if player.getClassId() == 0:
             class_id = int(message.content.split()[-1])
-            if class_id > (len(player.getClass().getAllClasses()) - 1):
+            if (class_id < (len(player.getClass().getAllClasses()))) and (not class_id == 0):
                 player.setClass(class_id)
-                await client.send_message(message.channel, message.author + ", you have successfully chose " + player.getClass().getClassName() + " as your class!") #specify which class later
+                await client.send_message(message.channel, message.author.name + ", you have successfully chose " + player.getClass().getClassName() + " as your class!") #specify which class later
             else:
-                await client.send_message(message.channel, "Invalid class id, " + message.author + ". Please try again.")
+                await client.send_message(message.channel, "Invalid class id, " + message.author.name + ". Please try again.")
         else:
-            await client.send_message(message.channel, message.author + ", you have already chosen a class! Your current class is " + player.getClass().getClassName())
+            await client.send_message(message.channel, message.author.name + ", you have already chosen a class! Your current class is " + player.getClass().getClassName())
     else:
-        await client.send_message(message.channel, message.author + ", you are not logged in.")
+        await client.send_message(message.channel, message.author.name + ", you are not logged in.")
 
 @client.event
 async def classInfoEvent(message):
     if logged_in:
         return None
     else:
-        await client.send_message(message.channel, message.author + ", you are not logged in.")
+        await client.send_message(message.channel, message.author.name + ", you are not logged in.")
 
 @client.event
 async def getStatsEvent(message):
     if logged_in:
         return None
     else:
-        await client.send_message(message.channel, message.author + ", you are not logged in.")
+        await client.send_message(message.channel, message.author.name + ", you are not logged in.")
 
 @client.event
 async def lookForBattle(message):
+    global player
     if logged_in:
-        return None
+        theMob = Mob(NumbersHandler.whichMobToEncounter(), player)
+        mobToEncounter = theMob.getCurrentMob()
+        print(mobToEncounter.getName())
     else:
-        await client.send_message(message.channel, message.author + ", you are not logged in.")
+        await client.send_message(message.channel, message.author.name + ", you are not logged in.")
     
 @client.event
 async def on_message(message):
@@ -121,7 +126,6 @@ async def on_message(message):
         await getStatsEvent(message)
     elif message.content.startswith('!battle'):
         await lookForBattle(message)
-
 
 
 

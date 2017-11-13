@@ -35,6 +35,7 @@ class Player:
     class_id = None #1 = Warrior 2 = Ranger 3 = Mage
     player_class = None #representation of the player's class. Not stored on the player's file. Will fix this later, right now i have no idea how lol
     message_author_id = None #client's id
+    current_tower_level = None #The level of the current tower its on
 
     def __init__(self, newUser, c, message_author_id):
         if newUser:
@@ -66,6 +67,7 @@ class Player:
             self.player_class = Classes(0)
             self.class_id = 0
             self.message_author_id = message_author_id
+            self.current_tower_level = 1
             
             self.updateFile(self.message_author_id)
         else:
@@ -97,6 +99,13 @@ class Player:
             self.player_class = Classes(c[22])
             self.class_id = c[22]
             self.message_author_id = c[23]
+            self.current_tower_level = c[24]
+
+    def getLevel(self):
+        return self.level
+
+    def getTowerLevel(self):
+        return self.current_tower_level
 
     def increase_level(self):
         level += 1
@@ -133,7 +142,6 @@ class Player:
         
         self.updateFile(self.message_author_id)
         
-
     def getClassId(self):
         return self.class_id
 
@@ -191,5 +199,7 @@ class Player:
         f.write(str(self.class_id))
         f.write("\r\n")
         f.write(str(self.message_author_id))
+        f.write("\r\n")
+        f.write(str(self.current_tower_level))
         f.write("\r\n")
         f.close()

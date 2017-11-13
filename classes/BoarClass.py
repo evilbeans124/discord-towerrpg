@@ -2,7 +2,7 @@ import os
 import discord
 import asyncio
 
-class BoarClass(Classes):
+class BoarClass:
     mob_id = 1
     name = "Boar"
     current_hp = None
@@ -32,9 +32,11 @@ class BoarClass(Classes):
     def __init__(self, player):
         self.createBoar(player)
 
-    #the stats of the created boar is based on the character's level, an internal luck generator, the current tower that the player is on
-    #and 
-    def createBoar(self):
-        self.
+    def getName(self):
+        return self.name
 
-    
+    #the stats of the created boar is based on the character's level,
+    #an internal luck generator and the current tower that the player is on
+    #however, for now, to simplify things, it's all going to be the same.
+    def createBoar(self, player):
+        self.current_hp = 50
