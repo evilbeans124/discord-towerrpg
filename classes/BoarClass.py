@@ -2,19 +2,9 @@ import os
 import discord
 import asyncio
 
-class Mob:
-
-    #a subclass of this class would be the actual mob itself
-    #eg zombie, boar
-
-    #the subclass only gets created upon encounter of a battle
-    #after the battle its gone forever lul
-
-    #this class is only called by the subclass
-
-    allMobs = ["Boar"]
-    
-    name = None
+class BoarClass(Classes):
+    mob_id = 1
+    name = "Boar"
     current_hp = None
     max_hp = None
     current_mp = None
@@ -38,10 +28,13 @@ class Mob:
     critical_damage_multiplier = None #both mag and phy
     block_chance = None #only works with shields, 100% = all blocked
     dodge_chance = None #100% = all dodged
+    
+    def __init__(self, player):
+        self.createBoar(player)
 
-    def __init__(self, mobToCreate): #parameter is string
-        if mobToCreate == "boar":
-            
+    #the stats of the created boar is based on the character's level, an internal luck generator, the current tower that the player is on
+    #and 
+    def createBoar(self):
+        self.
 
-    def getAllMobs(self):
-        return allMobs
+    
