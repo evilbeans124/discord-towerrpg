@@ -1,7 +1,6 @@
 import discord
 import asyncio
 import os
-import re
 
 from classes.Player import Player
 from classes.Mob import Mob
@@ -11,6 +10,7 @@ from classes.NumbersHandler import NumbersHandler
 
 player = None
 logged_in = False
+awaiting = False
 
 client = discord.Client()
 
@@ -106,9 +106,15 @@ async def getStatsEvent(message):
 async def lookForBattle(message):
     global player
     if logged_in:
+        waiting_message = await client.send_message(message.channel, message.author.name + ", you are currently searching for a battle....")
+        awaiting = True
+        await NumbersHandler.encounterWait()
+
+        #add animation code for the .'s to increase here
+        
         theMob = Mob(NumbersHandler.whichMobToEncounter(), player)
         mobToEncounter = theMob.getCurrentMob()
-        print(mobToEncounter.getName())
+        await client.send_message(message.channel, message.author.name + ", you have encountered a " + mobToEncounter.getName() + ". Battle begins!")
     else:
         await client.send_message(message.channel, message.author.name + ", you are not logged in.")
     
