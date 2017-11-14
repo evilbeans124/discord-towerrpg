@@ -22,7 +22,8 @@ class NumbersHandler:
 
     @classmethod
     async def encounterWait(cls):
-        cls.randomTime = random.random() * 30
+        #cls.randomTime = random.random() * 30
+        cls.randomTime = random.random() * 10
         await asyncio.sleep(cls.randomTime)
 
     @classmethod

@@ -5,6 +5,7 @@ import os
 from classes.Player import Player
 from classes.Mob import Mob
 from classes.NumbersHandler import NumbersHandler
+from classes.Battle import Battle
 
 #more of an event handler class than anything
 
@@ -105,6 +106,7 @@ async def getStatsEvent(message):
 @client.event
 async def lookForBattle(message):
     global player
+    global client
     if logged_in:
         waiting_message = await client.send_message(message.channel, message.author.name + ", you are currently searching for a battle....")
         awaiting = True
@@ -115,6 +117,8 @@ async def lookForBattle(message):
         theMob = Mob(NumbersHandler.whichMobToEncounter(), player)
         mobToEncounter = theMob.getCurrentMob()
         await client.send_message(message.channel, message.author.name + ", you have encountered a " + mobToEncounter.getName() + ". Battle begins!")
+
+        thebattle = Battle(player, mobToEncounter, message, client)
     else:
         await client.send_message(message.channel, message.author.name + ", you are not logged in.")
     
