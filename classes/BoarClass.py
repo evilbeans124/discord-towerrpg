@@ -1,6 +1,7 @@
 import os
 import discord
 import asyncio
+import random
 
 class BoarClass:
     mob_id = 1
@@ -39,4 +40,23 @@ class BoarClass:
     #an internal luck generator and the current tower that the player is on
     #however, for now, to simplify things, it's all going to be the same.
     def createBoar(self, player):
-        self.current_hp = 50
+        self.current_hp = 20
+        self.max_hp = 20
+        self.current_mp = 5
+        self.max_mp = 5
+        self.speed = random.randint(4, 6)
+
+    def getCurrentHp(self):
+        return self.current_hp
+
+    def getMaxHp(self):
+        return self.max_hp
+
+    def getCurrentMp(self):
+        return self.current_mp
+
+    def getMaxMp(self):
+        return self.max_mp
+
+    def getSpeed(self):
+        return self.speed

@@ -56,7 +56,7 @@ class Player:
             self.attack_power = 0
             self.physical_defense = 0
             self.magical_defense = 0
-            self.speed = 1
+            self.speed = 5
             self.accuracy = 0
             self.parry_chance = 0
             self.critical_chance = 0
@@ -106,6 +106,21 @@ class Player:
 
     def getTowerLevel(self):
         return self.current_tower_level
+
+    def getCurrentHp(self):
+        return self.current_hp
+
+    def getMaxHp(self):
+        return self.max_hp
+
+    def getCurrentMp(self):
+        return self.current_mp
+
+    def getMaxMp(self):
+        return self.max_mp
+
+    def getSpeed(self):
+        return self.speed
 
     def increase_level(self):
         level += 1

@@ -11,7 +11,7 @@ from classes.Battle import Battle
 
 player = None
 logged_in = False
-awaiting = False
+in_battle = False
 
 client = discord.Client()
 
@@ -107,18 +107,22 @@ async def getStatsEvent(message):
 async def lookForBattle(message):
     global player
     global client
+    global in_battle
     if logged_in:
-        waiting_message = await client.send_message(message.channel, message.author.name + ", you are currently searching for a battle....")
-        awaiting = True
-        await NumbersHandler.encounterWait()
+        if in_battle:
+            await client.send_message(message.channel, message.author.name + ", you are currently in a battle!")
+        else:
+            waiting_message = await client.send_message(message.channel, message.author.name + ", you are currently searching for a battle....")
+            await NumbersHandler.encounterWait()
 
-        #add animation code for the .'s to increase here
+            #add animation code for the .'s to increase here
         
-        theMob = Mob(NumbersHandler.whichMobToEncounter(), player)
-        mobToEncounter = theMob.getCurrentMob()
-        await client.send_message(message.channel, message.author.name + ", you have encountered a " + mobToEncounter.getName() + ". Battle begins!")
+            theMob = Mob(NumbersHandler.whichMobToEncounter(), player)
+            mobToEncounter = theMob.getCurrentMob()
+            await client.send_message(message.channel, message.author.name + ", you have encountered a " + mobToEncounter.getName() + ". Battle begins!")
+            in_battle = True
 
-        thebattle = Battle(player, mobToEncounter, message, client)
+            thebattle = Battle(player, mobToEncounter, message, client)
     else:
         await client.send_message(message.channel, message.author.name + ", you are not logged in.")
     
@@ -172,9 +176,6 @@ async def on_message(message):
                 counter += 1
 
         await client.edit_message(tmp, 'You have {} messages.'.format(counter))
-    elif message.content.startswith('!sleep'):
-        await asyncio.sleep(2)
-        await client.send_message(message.channel, 'Done sleeping')
 
     if message.content.startswith('$cool'):
         await client.send_message(message.channel, 'Who is cool? Type $name namehere')
@@ -185,5 +186,5 @@ async def on_message(message):
         message = await client.wait_for_message(author=message.author, check=check)
         name = message.content[len('$name'):].strip()
         await client.send_message(message.channel, '{} is cool indeed'.format(name))
-        
+    
 client.run('Mzc4MjI4MDQ3MzcyODc3ODI0.DOYh9A.pGe81FZzMqqMCgsLbNm_ijZ2E1s')
