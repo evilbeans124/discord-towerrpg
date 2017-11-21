@@ -41,6 +41,8 @@ class Player:
         if newUser:
             self.current_hp = 50
             self.max_hp = 50
+            self.current_mp = 10
+            self.max_mp = 10
             self.gold = 100
             self.experience = 0
             self.experienceToLevel = 1000
@@ -52,8 +54,8 @@ class Player:
 
             self.hp_regen = 0
             self.mp_regen = 0
-            self.spell_power = 0
-            self.attack_power = 0
+            self.spell_power = 5#not true though, edit based on class
+            self.attack_power = 5
             self.physical_defense = 0
             self.magical_defense = 0
             self.speed = 5
@@ -73,33 +75,35 @@ class Player:
         else:
             self.current_hp = c[0]
             self.max_hp = c[1]
-            self.gold = c[2]
-            self.experience = c[3]
-            self.experienceToLevel = c[4]
-            self.level = c[5]
+            self.current_mp = c[2]
+            self.max_mp = c[3]
+            self.gold = c[4]
+            self.experience = c[5]
+            self.experienceToLevel = c[6]
+            self.level = c[7]
 
-            self.strength = c[6]
-            self.dexterity = c[7]
-            self.intellect = c[8]
+            self.strength = c[8]
+            self.dexterity = c[9]
+            self.intellect = c[10]
 
-            self.hp_regen = c[9]
-            self.mp_regen = c[10]
-            self.spell_power = c[11]
-            self.attack_power = c[12]
-            self.physical_defense = c[13]
-            self.magical_defense = c[14]
-            self.speed = c[15]
-            self.accuracy = c[16]
-            self.parry_chance = c[17]
-            self.critical_chance = c[18]
-            self.critical_damage_multiplier = c[19]
-            self.block_chance = c[20]
-            self.dodge_chance = c[21]
+            self.hp_regen = c[11]
+            self.mp_regen = c[12]
+            self.spell_power = c[13]
+            self.attack_power = c[14]
+            self.physical_defense = c[15]
+            self.magical_defense = c[16]
+            self.speed = c[17]
+            self.accuracy = c[18]
+            self.parry_chance = c[19]
+            self.critical_chance = c[20]
+            self.critical_damage_multiplier = c[21]
+            self.block_chance = c[22]
+            self.dodge_chance = c[23]
 
-            self.player_class = Classes(c[22])
-            self.class_id = c[22]
-            self.message_author_id = c[23]
-            self.current_tower_level = c[24]
+ #           self.player_class = Classes(c[24])#wtf is this
+            self.class_id = c[24]
+            self.message_author_id = c[25]
+            self.current_tower_level = c[26]
 
     def getLevel(self):
         return self.level
@@ -119,8 +123,20 @@ class Player:
     def getMaxMp(self):
         return self.max_mp
 
+    def getAttack(self):
+        return self.attack_power
+
     def getSpeed(self):
         return self.speed
+
+    def getExp(self):
+        return self.experience
+
+    def getGold(self):
+        return self.gold
+
+    def setHp(self, hpToSet):
+        self.current_hp = hpToSet
 
     def increase_level(self):
         level += 1
@@ -138,9 +154,19 @@ class Player:
 
         self.updateFile(self.message_author_id)
 
-    def increase_experience(self, experienceGained):
+    def decrease_gold(self, goldToDecrease):
+        self.gold -= goldToDecrease
+
+        self.updateFile(self.message_author_id)
+
+    def increase_gold(self, goldToIncrease):
+        self.gold += goldToIncrease
+
+        self.updateFile(self.message_author_id)
+
+    def increase_exp(self, experienceGained):
         self.experience += experienceGained
-        while (self.experience >= experienceToLevel):
+        while (self.experience >= self.experienceToLevel):
             self.increase_level()
             self.newExperienceToLevel()
 
@@ -170,6 +196,10 @@ class Player:
         f.write(str(self.current_hp))
         f.write("\r\n")
         f.write(str(self.max_hp))
+        f.write("\r\n")
+        f.write(str(self.current_mp))
+        f.write("\r\n")
+        f.write(str(self.max_mp))
         f.write("\r\n")
         f.write(str(self.gold))
         f.write("\r\n")

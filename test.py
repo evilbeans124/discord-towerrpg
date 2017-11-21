@@ -99,7 +99,7 @@ async def classInfoEvent(message):
 @client.event
 async def getStatsEvent(message):
     if logged_in:
-        return None
+        await client.send_message(message.channel, message.author.name + "Hp: " + str(player.getCurrentHp()))
     else:
         await client.send_message(message.channel, message.author.name + ", you are not logged in.")
 
@@ -121,8 +121,8 @@ async def lookForBattle(message):
             mobToEncounter = theMob.getCurrentMob()
             await client.send_message(message.channel, message.author.name + ", you have encountered a " + mobToEncounter.getName() + ". Battle begins!")
             in_battle = True
-
             thebattle = Battle(player, mobToEncounter, message, client)
+            in_battle = False
     else:
         await client.send_message(message.channel, message.author.name + ", you are not logged in.")
     

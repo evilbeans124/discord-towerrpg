@@ -32,6 +32,9 @@ class BoarClass:
     dodge_chance = None #100% = all dodged
 
     damage = None
+
+    expGiven = None
+    goldGiven = None
     
     def __init__(self, player):
         self.createBoar(player)
@@ -48,7 +51,9 @@ class BoarClass:
         self.current_mp = 5
         self.max_mp = 5
         self.speed = random.randint(4, 6)
-        self.attack = random.randint(2, 3)
+        self.attack_power = random.randint(2, 3)
+        self.expGiven = random.randint(5, 10)
+        self.goldGiven = random.randint(5, 10)
 
     def getCurrentHp(self):
         return self.current_hp
@@ -64,3 +69,15 @@ class BoarClass:
 
     def getSpeed(self):
         return self.speed
+
+    def getAttack(self):
+        return self.attack_power
+
+    def getExp(self):
+        return self.expGiven
+
+    def getGold(self):
+        return self.goldGiven
+
+    def decrease_hp(self, hpToDecrease):
+        self.current_hp -= hpToDecrease
