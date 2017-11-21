@@ -3,6 +3,7 @@ import discord
 import asyncio
 
 from classes.Mob import Mob
+from classes.Skills import Skills
 import random
 
 class NumbersHandler:
@@ -22,7 +23,6 @@ class NumbersHandler:
 
     @classmethod
     async def encounterWait(cls):
-        #cls.randomTime = random.random() * 30
         cls.randomTime = random.random() * 10
         await asyncio.sleep(cls.randomTime)
 

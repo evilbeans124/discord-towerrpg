@@ -2,6 +2,7 @@ import os
 import discord
 import asyncio
 import random
+import math
 
 class BoarClass:
     mob_id = 1
@@ -29,6 +30,8 @@ class BoarClass:
     critical_damage_multiplier = None #both mag and phy
     block_chance = None #only works with shields, 100% = all blocked
     dodge_chance = None #100% = all dodged
+
+    damage = None
     
     def __init__(self, player):
         self.createBoar(player)
@@ -45,6 +48,7 @@ class BoarClass:
         self.current_mp = 5
         self.max_mp = 5
         self.speed = random.randint(4, 6)
+        self.attack = random.randint(2, 3)
 
     def getCurrentHp(self):
         return self.current_hp
