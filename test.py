@@ -24,9 +24,6 @@ bot = commands.Bot(command_prefix=determinePrefix, description=description)
 async def on_ready():
     """http://discordpy.readthedocs.io/en/rewrite/api.html#discord.on_ready"""
 
-    #print(f'\n\nLogged in as: ' + str(bot.user.name) + ' - ' +
-    #str(bot.user.id) + '\nVersion: ' + str(discord.__version__) + '\n')
-    #the below is the same as the above, but use the format below
     print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n')
 
     # Changes our bots Playing Status. type=1(streaming) for a standard game you could remove type and url.
@@ -42,5 +39,11 @@ async def on_ready():
                 print(f'Failed to load extension {extension}.', file=sys.stderr)
                 traceback.print_exc()
     print(f'Successfully logged in and booted...!')
+
+@bot.check
+async def classCheck(ctx): #check if class is chosen, if not then no other 
+    if XXXX:
+        await ctx.send(f'{ctx.author.name}, you must choose a class first before anything!')
+        return ctx.message.content 
 
 bot.run('Mzc4MjI4MDQ3MzcyODc3ODI0.DOYh9A.pGe81FZzMqqMCgsLbNm_ijZ2E1s', bot=True, reconnect=True)

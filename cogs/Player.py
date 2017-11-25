@@ -2,7 +2,7 @@ import os
 import discord
 import asyncio
 
-from classes.Classes import Classes
+#from classes.Classes import Classes
 
 class Player:
     current_hp = None
@@ -32,7 +32,7 @@ class Player:
     block_chance = None #only works with shields, 100% = all blocked
     dodge_chance = None #100% = all dodged
     
-    class_id = None #1 = Warrior 2 = Ranger 3 = Mage
+    class_id = None #0 = Hasn't chose 1 = Warrior 2 = Ranger 3 = Mage
     player_class = None #representation of the player's class. Not stored on the player's file. Will fix this later, right now i have no idea how lol
     message_author_id = None #client's id
     current_tower_level = None #The level of the current tower its on
@@ -66,7 +66,7 @@ class Player:
             self.block_chance = 0
             self.dodge_chance = 0
             
-            self.player_class = Classes(0)
+            #self.player_class = Classes(0)
             self.class_id = 0
             self.message_author_id = message_author_id
             self.current_tower_level = 1
@@ -134,6 +134,9 @@ class Player:
 
     def getGold(self):
         return self.gold
+
+    def getClassId(self):
+        return self.class_id
 
     def setHp(self, hpToSet):
         self.current_hp = hpToSet
