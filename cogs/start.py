@@ -3,45 +3,45 @@ import os
 import asyncio
 
 from discord.ext import commands
-from cogs import Player
+from cogs.Player import Player
 
-class Start:
+class Start:    
     def __init__(self, bot):
         self.bot = bot
         self.players = {}
+        self.playerState = {}
 
     def read_integers(self, filename):
         with open(filename) as f:
             return [int(x) for x in f]
 
-  #  async def __local_check(self, ctx):
-#        return ctx.command.name == 'classes'
-
     async def newPlayerEvent(self, ctx):
         await ctx.send(f'Welcome, {ctx.author.name}. TowerRPG is a text-based RTS MMORPG on Discord!')
-        await asyncio.sleep(2)
+        await asyncio.sleep(1.5)
         await ctx.send(f'{ctx.author.name}, please choose your class using the command !classchoose <id>. To read more about each class, do !classes')
-        #somehow activates something in a check
 
-    async def hasNotChosenClass(ctx):
+    async def hasNotChosenClass(self, ctx):
         player = self.players.get(ctx.author.id)
         return player.getClassId() == 0
 
     @commands.command(name='classchoose')
-    @commands.check(hasNotChosenClass)
     async def classChooseEvent(self, ctx, arg1):
-        
-        
-        def check(m):
-            if m.content != '!classes':
-                classCho
-            return m.content == '!classes'
-        msg = await self.bot.wait_for('message', check=check)
-        print(msg.content)
+        if (not type(arg1)) == int and (not arg1.is_integer()):
+            ctx.send(f'{ctx.author.name}, you have inputted a wrong class id. Try again.')
+        else:
+            class_id = int(arg1)
+            player = self.players.get(ctx.author.id)
+            player.setClass(class_id)
+            self.players.update({ctx.author.id:player}) #key:value
+            await ctx.send(f'{ctx.author.name}, you have successfully chose {player.getClass().getClassName()} as your class!')
+
+    @commands.command(name='classes')
+    async def listClassesEvent(self, ctx):
+        await ctx.send(f'SOMETHING LOL')
 
     @commands.command(name='register')
     async def register(self, ctx):
-        if await self.getPlayer(ctx):
+        if await self.getIsPlayer(ctx):
             await ctx.send(f'{ctx.author.name}, you are already logged in!')
         else:
             if os.path.isfile(f'/Users/orion01px2018/Desktop/discord-towerrpg/player_files/{ctx.author.id}.txt'):
@@ -55,12 +55,11 @@ class Start:
 
                 await ctx.send(f'{ctx.author.name}, you have sucessfully registered.')
   
-
                 await self.newPlayerEvent(ctx)
 
     @commands.command(name='login')
     async def login(self, ctx):
-        if await self.getPlayer(ctx):
+        if await self.getIsPlayer(ctx):
             await ctx.send(f'{ctx.author.name}, you are already logged in!')
         else:
             filepath = f'/Users/orion01px2018/Desktop/discord-towerrpg/player_files/{ctx.author.id}.txt'
@@ -73,8 +72,14 @@ class Start:
             else:
                 await ctx.send(f'{ctx.author.name}, you haven\'t registed yet, please do !register.')
 
-    async def getPlayer(self, ctx):
+    async def getIsPlayer(self, ctx):
         return ctx.author.id in self.players
+
+    async def getPlayer(self, ctx):
+        return self.players.get(ctx.author.id)
+
+    async def updatePlayer(self, ctx, thePlayer):
+        self.players.update({ctx.author.id:thePlayer}) #key:value
         
 def setup(bot):
     bot.add_cog(Start(bot))

@@ -41,9 +41,34 @@ async def on_ready():
     print(f'Successfully logged in and booted...!')
 
 @bot.check
-async def classCheck(ctx): #check if class is chosen, if not then no other 
-    if XXXX:
-        await ctx.send(f'{ctx.author.name}, you must choose a class first before anything!')
-        return ctx.message.content 
+async def globalCheck(ctx):
+    start_cog = bot.get_cog('Start')
+    isPlayer = await start_cog.getIsPlayer(ctx)
+    cmd = ctx.command.name
+
+    #ensuring player to be an actual player object
+    if not isPlayer:
+        if cmd == 'login' or cmd == 'register':
+            return True
+        else:
+            await ctx.send(f'{ctx.author.name}, you need to !login first!')
+            return False
+
+    player = await start_cog.getPlayer(ctx)
+    print(player)
+
+    #checking whether player has chosen class or not
+    hasChosenClass = not await start_cog.hasNotChosenClass(ctx)
+    if not hasChosenClass:
+        if cmd == 'login' or cmd == 'register' or cmd == 'classchoose' or cmd == 'classes':
+            return True
+        else:
+            await ctx.send(f'{ctx.author.name}, you need to choose a class first. Please choose one by using the command !classchoose <id>. To read more about each class, do !classes.')
+            return False
+    else:
+        if cmd == 'classchoose':
+            await ctx.send(f'{ctx.author.name}, you have already chosen a class! Your current class is {player.getClass().getClassName()}.')
+            return False
+    return True
 
 bot.run('Mzc4MjI4MDQ3MzcyODc3ODI0.DOYh9A.pGe81FZzMqqMCgsLbNm_ijZ2E1s', bot=True, reconnect=True)

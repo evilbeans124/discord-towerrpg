@@ -2,7 +2,7 @@ import os
 import discord
 import asyncio
 
-#from classes.Classes import Classes
+from cogs.Classes import Classes
 
 class Player:
     current_hp = None
