@@ -16,7 +16,9 @@ def determinePrefix(bot, message):
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
 description = 'RPG!'
-initial_extensions = ['cogs.start']
+initial_extensions = ['cogs.start',
+                      'cogs.mainmenu',
+                      'cogs.pvebattleinterface']
 
 bot = commands.Bot(command_prefix=determinePrefix, description=description)
 
@@ -55,7 +57,6 @@ async def globalCheck(ctx):
             return False
 
     player = await start_cog.getPlayer(ctx)
-    print(player)
 
     #checking whether player has chosen class or not
     hasChosenClass = not await start_cog.hasNotChosenClass(ctx)
@@ -67,8 +68,23 @@ async def globalCheck(ctx):
             return False
     else:
         if cmd == 'classchoose':
-            await ctx.send(f'{ctx.author.name}, you have already chosen a class! Your current class is {player.getClass().getClassName()}.')
+            await ctx.send(f'{ctx.author.name}, you have already chosen a class! Your current class is {player.getClass().getClassName()}.')#this line i s  error
             return False
+
+    #battle checkings
+    in_battle = await start_cog.getPlayerState(ctx) == 'in_battle'
+    if in_battle:
+        if cmd == 'attack' or cmd == 'skill' or cmd == 'items' or cmd == 'run':
+            return True
+        else:
+            await ctx.send(f'{ctx.author.name}, you are currently in a battle!')
+            return False
+    else:
+        if cmd == 'attack' or cmd == 'skill' or cmd == 'items' or cmd == 'run':
+            await ctx.send(f'{ctx.author.name}, you aren\'t in a battle yet!')
+            return False
+        else:
+            return True
     return True
 
 bot.run('Mzc4MjI4MDQ3MzcyODc3ODI0.DOYh9A.pGe81FZzMqqMCgsLbNm_ijZ2E1s', bot=True, reconnect=True)

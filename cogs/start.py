@@ -33,6 +33,7 @@ class Start:
             player = self.players.get(ctx.author.id)
             player.setClass(class_id)
             self.players.update({ctx.author.id:player}) #key:value
+            self.playerState.update({ctx.author.id:'main_menu'})
             await ctx.send(f'{ctx.author.name}, you have successfully chose {player.getClass().getClassName()} as your class!')
 
     @commands.command(name='classes')
@@ -52,6 +53,7 @@ class Start:
                 player = Player(True, None, ctx.author.id)
 
                 self.players.update({ctx.author.id:player}) #key:value
+                self.playerState.update({ctx.author.id:"class_choose"})
 
                 await ctx.send(f'{ctx.author.name}, you have sucessfully registered.')
   
@@ -68,6 +70,7 @@ class Start:
                 player = Player(False, c, ctx.author.id)
 
                 self.players.update({ctx.author.id:player}) #key:value
+                self.playerState.update({ctx.author.id:"main_menu"})
                 await ctx.send(f'{ctx.author.name}, you have successfully logged in. Welcome back!')
             else:
                 await ctx.send(f'{ctx.author.name}, you haven\'t registed yet, please do !register.')
@@ -75,11 +78,19 @@ class Start:
     async def getIsPlayer(self, ctx):
         return ctx.author.id in self.players
 
+    #the below two go together :3
     async def getPlayer(self, ctx):
         return self.players.get(ctx.author.id)
 
     async def updatePlayer(self, ctx, thePlayer):
         self.players.update({ctx.author.id:thePlayer}) #key:value
+
+    #stuff about a player's state. state is a string.
+    async def getPlayerState(self, ctx):
+        return self.playerState.get(ctx.author.id)
+
+    async def updatePlayerState(self, ctx, state):
+        self.playerState.update({ctx.author.id:state}) #key:value
         
 def setup(bot):
     bot.add_cog(Start(bot))
