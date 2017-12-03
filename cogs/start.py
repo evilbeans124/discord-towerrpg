@@ -4,6 +4,7 @@ import asyncio
 
 from discord.ext import commands
 from cogs.Player import Player
+from cogs.Classes import Classes
 
 class Start:    
     def __init__(self, bot):
@@ -26,7 +27,7 @@ class Start:
 
     @commands.command(name='classchoose')
     async def classChooseEvent(self, ctx, arg1):
-        if (not type(arg1)) == int and (not arg1.is_integer()):
+        if (not type(arg1)) == int and (not arg1.is_integer()) and (arg1 < 1 and arg1 > len(Classes.getAllClasses()) - 1):
             ctx.send(f'{ctx.author.name}, you have inputted a wrong class id. Try again.')
         else:
             class_id = int(arg1)
