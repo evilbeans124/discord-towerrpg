@@ -4,7 +4,9 @@ import asyncio
 import random
 import math
 
-class BoarClass:
+from cogs.Mob import Mob
+
+class BoarClass(Mob):
     mob_id = 1
     name = "Boar"
     current_hp = None
@@ -37,6 +39,7 @@ class BoarClass:
     goldGiven = None
     
     def __init__(self, player):
+        #super().__init__()
         self.createBoar(player)
 
     def getName(self):
@@ -46,6 +49,9 @@ class BoarClass:
     #an internal luck generator and the current tower that the player is on
     #however, for now, to simplify things, it's all going to be the same.
     def createBoar(self, player):
+        player_level = player.getLevel()
+        self.level = random.randint(player_level - 3, player_level + 3)
+        
         self.current_hp = 20
         self.max_hp = 20
         self.current_mp = 5

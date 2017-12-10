@@ -2,8 +2,8 @@ import discord
 import asyncio
 
 from discord.ext import commands
-from cogs.mob.BoarClass import BoarClass
 from cogs.PvEBattle import PvEBattle
+from cogs.Mob import Mob
 
 class PvEBattleInterface:
     def __init__(self, bot):
@@ -18,7 +18,7 @@ class PvEBattleInterface:
     async def initiatePvEBattle(self, ctx):
         start_cog = self.bot.get_cog('Start')
         player = await start_cog.getPlayer(ctx)
-        mob = BoarClass(player)
+        mob = Mob.encounterRandomMob(player)
         PvEbattle = PvEBattle(player, mob)
         self.currentPvEBattles.update({ctx.author.id:PvEbattle}) #key:value
         await ctx.send(f'{ctx.author.name}, you have encountered a {mob.getName()}. Battle begins!')

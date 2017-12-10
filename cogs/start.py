@@ -6,6 +6,9 @@ from discord.ext import commands
 from cogs.Player import Player
 from cogs.Classes import Classes
 
+from cogs.Mob import Mob
+from cogs.mob.BoarClass import BoarClass
+
 class Start:    
     def __init__(self, bot):
         self.bot = bot

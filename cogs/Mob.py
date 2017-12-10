@@ -1,8 +1,7 @@
 import os
 import discord
 import asyncio
-
-from classes.BoarClass import BoarClass
+import random
 
 class Mob:
 
@@ -14,7 +13,6 @@ class Mob:
 
     #this class is only called by the subclass
 
-    allMobs = ["Boar"]
     current_mob = None
     
     #name = None
@@ -42,20 +40,18 @@ class Mob:
     #block_chance = None #only works with shields, 100% = all blocked
     #dodge_chance = None #100% = all dodged
 
-    def __init__(self, mobToCreate, player): #parameter is string
-        if mobToCreate == "Boar":
-            boar = BoarClass(player)
-            self.setCurrentMob(boar)
-        else:
-            self.setCurrentMob(mobToCreate)
-        #elif mobToCreate == "OTHER KINDS OF MOBS BLABLABLA"
-            
     @classmethod
-    def getAllMobs(self):
-        return self.allMobs
+    def encounterRandomMob(cls, player):
+        allMobs = Mob.__subclasses__() #this is an array
+        randomClassNum = random.randint(0, len(allMobs) - 1)
+        return allMobs[randomClassNum](player)
 
-    def setCurrentMob(self, mob):
-        self.current_mob = mob
+    @classmethod
+    def getAllMobs(cls):
+        return cls.__subclasses__()
+
+    def __init__(self):
+        hi = "hi"
 
     def getCurrentMob(self):
         return self.current_mob

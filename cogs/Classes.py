@@ -32,5 +32,6 @@ class Classes:
 
     #this should be a class method, but something is calling it right now
     #fix later
+    @classmethod
     def getAllClasses(self):
         return self.allClasses
