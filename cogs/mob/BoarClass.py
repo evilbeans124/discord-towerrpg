@@ -15,10 +15,6 @@ class BoarClass(Mob):
     max_mp = None
     level = None
 
-    strength = None #increases attack_power, hp, physical defense, hp regen
-    dexterity = None #increases speed, accuracy, dodge chance, crit multi/chance
-    intellect = None #increases spell power, magic defense, mp, mp regen
-
     hp_regen = None #amount of hp regen per turn.
     mp_regen = None #amount of mp regen per turn.
     spell_power = None #magical only
@@ -31,7 +27,7 @@ class BoarClass(Mob):
     critical_chance = None #100 = 100% crit, both mag and phy
     critical_damage_multiplier = None #both mag and phy
     block_chance = None #only works with shields, 100% = all blocked
-    dodge_chance = None #100% = all dodged
+    dodge_chance = None #100 = all dodged
 
     damage = None
 
@@ -51,15 +47,17 @@ class BoarClass(Mob):
     def createBoar(self, player):
         player_level = player.getLevel()
         self.level = random.randint(player_level - 3, player_level + 3)
+        if self.level < 1:
+            self.level = 1
         
-        self.current_hp = 20
-        self.max_hp = 20
+        self.current_hp = 20 + self.level * 3
+        self.max_hp = self.current_hp
         self.current_mp = 5
-        self.max_mp = 5
-        self.speed = random.randint(4, 6)
-        self.attack_power = random.randint(2, 3)
-        self.expGiven = random.randint(5, 10)
-        self.goldGiven = random.randint(5, 10)
+        self.max_mp = self.current_mp
+        self.speed = random.randint(4, 6) + self.level * 0.05
+        self.attack_power = random.randint(2, 3) + self.level * 0.75
+        self.expGiven = random.randint(5, 10) * self.level
+        self.goldGiven = random.randint(5, 10) * self.level
 
     def getCurrentHp(self):
         return self.current_hp
@@ -84,6 +82,9 @@ class BoarClass(Mob):
 
     def getGold(self):
         return self.goldGiven
+
+    def getLevel(self):
+        return self.level
 
     def decrease_hp(self, hpToDecrease):
         self.current_hp -= hpToDecrease

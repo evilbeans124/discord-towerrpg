@@ -1,0 +1,39 @@
+{
+    "attributes": {
+        "accuracy": "95",
+        "attack_power": "5",
+        "block_chance": "0",
+        "critical_chance": "2.5",
+        "critical_damage_multiplier": "2",
+        "dexterity": 5,
+        "dodge_chance": "0",
+        "hp_regen": "0",
+        "intellect": "5",
+        "magical_defense": "0",
+        "mp_regen": "0",
+        "parry_chance": "95",
+        "physical_defense": "0",
+        "speed": "5",
+        "spell_power": "5",
+        "strength": 5
+    },
+    "personal_no_display": {
+        "class_id": "2",
+        "coordinates": [
+            5,
+            5
+        ],
+        "message_author_id": "159141262765719553"
+    },
+    "statistics": {
+        "current_hp": "50",
+        "current_mp": "10",
+        "current_tower_level": "1",
+        "experience": "0",
+        "experienceToLevel": "100",
+        "gold": "100",
+        "level": "1",
+        "max_hp": "50",
+        "max_mp": "10"
+    }
+}

@@ -2,6 +2,9 @@ import discord
 import os
 import asyncio
 
+import io
+import json
+
 from discord.ext import commands
 from cogs.Player import Player
 from cogs.Classes import Classes
@@ -14,11 +17,7 @@ class Start:
         self.bot = bot
         self.players = {}
         self.playerState = {}
-
-    def read_integers(self, filename):
-        with open(filename) as f:
-            return [int(x) for x in f]
-
+        
     async def newPlayerEvent(self, ctx):
         await ctx.send(f'Welcome, {ctx.author.name}. TowerRPG is a text-based RTS MMORPG on Discord!')
         await asyncio.sleep(1.5)
@@ -49,12 +48,12 @@ class Start:
         if await self.getIsPlayer(ctx):
             await ctx.send(f'{ctx.author.name}, you are already logged in!')
         else:
-            if os.path.isfile(f'/Users/orion01px2018/Desktop/discord-towerrpg/player_files/{ctx.author.id}.txt'):
+            if os.path.isfile(f'/Users/orion01px2018/Desktop/discord-towerrpg/player_files/{ctx.author.id}.json'):
                 await ctx.send(f'{ctx.author.name}, you have already registered before, please do !login instead.')
             else:
-                f = open(f'/Users/orion01px2018/Desktop/discord-towerrpg/player_files/{ctx.author.id}.txt', 'w+')
-                f.close()
-                player = Player(True, None, ctx.author.id)
+                await self.createPlayerFile(ctx)
+                
+                player = Player(ctx.author.id)
 
                 self.players.update({ctx.author.id:player}) #key:value
                 self.playerState.update({ctx.author.id:"class_choose"})
@@ -68,10 +67,9 @@ class Start:
         if await self.getIsPlayer(ctx):
             await ctx.send(f'{ctx.author.name}, you are already logged in!')
         else:
-            filepath = f'/Users/orion01px2018/Desktop/discord-towerrpg/player_files/{ctx.author.id}.txt'
+            filepath = f'/Users/orion01px2018/Desktop/discord-towerrpg/player_files/{ctx.author.id}.json'
             if os.path.isfile(filepath):
-                c = self.read_integers(filepath)
-                player = Player(False, c, ctx.author.id)
+                player = Player(ctx.author.id)
 
                 self.players.update({ctx.author.id:player}) #key:value
                 self.playerState.update({ctx.author.id:"main_menu"})
@@ -95,6 +93,49 @@ class Start:
 
     async def updatePlayerState(self, ctx, state):
         self.playerState.update({ctx.author.id:state}) #key:value
+
+    async def createPlayerFile(self, ctx):        
+        f = open(f'/Users/orion01px2018/Desktop/discord-towerrpg/player_files/{ctx.author.id}.json', 'w+')
+        f.close()
+        
+        filepath = f'/Users/orion01px2018/Desktop/discord-towerrpg/player_files/{str(ctx.author.id)}'
+        try:
+            to_unicode = unicode
+        except NameError:
+            to_unicode = str
+
+        data = {'attributes': {'strength': 5,
+                               'dexterity': 5,
+                               'intellect': 5,
+                               'hp_regen': 0,
+                               'mp_regen': 0,
+                               'spell_power': 5,#not true though, edit based on class
+                               'attack_power': 5,
+                               'physical_defense': 0,
+                               'magical_defense': 0,
+                               'speed': 5,
+                               'accuracy': 95,
+                               'parry_chance': 0,
+                               'critical_chance': 2.5,
+                               'critical_damage_multiplier': 2,
+                               'block_chance': 0,
+                               'dodge_chance': 0},
+                'statistics': {'current_hp': 50,
+                               'max_hp': 50,
+                               'current_mp': 10,
+                               'max_mp': 10,
+                               'level': 1,
+                               'experience': 0,
+                               'experienceToLevel': 100,
+                               'gold': 100,
+                               'current_tower_level': 1},
+                'personal_no_display': {'class_id': 0,
+                               'message_author_id': ctx.author.id,
+                               'coordinates': [5, 5]}}
+
+        with io.open(f'{filepath}.json', 'w+', encoding='utf8') as outfile:
+            str_ = json.dumps(data, indent=4, sort_keys=True, separators=(',', ': '), ensure_ascii=False)
+            outfile.write(to_unicode(str_))
         
 def setup(bot):
     bot.add_cog(Start(bot))

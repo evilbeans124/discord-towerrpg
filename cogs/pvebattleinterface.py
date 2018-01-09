@@ -4,6 +4,7 @@ import asyncio
 from discord.ext import commands
 from cogs.PvEBattle import PvEBattle
 from cogs.Mob import Mob
+from cogs.Player import Player
 
 class PvEBattleInterface:
     def __init__(self, bot):
@@ -21,13 +22,13 @@ class PvEBattleInterface:
         mob = Mob.encounterRandomMob(player)
         PvEbattle = PvEBattle(player, mob)
         self.currentPvEBattles.update({ctx.author.id:PvEbattle}) #key:value
-        await ctx.send(f'{ctx.author.name}, you have encountered a {mob.getName()}. Battle begins!')
+        await ctx.send(f'{ctx.author.name}, you have encountered a Lv.{mob.getLevel()} {mob.getName()}. Battle begins!')
 
         await self.printBattleLog(ctx, mob, player)
 
-        if isinstance(PvEbattle.getCurrentTurn(), type(PvEbattle.getMob())):
+        if isinstance(PvEbattle.getCurrentTurn(), Mob):
             await self.mobTurn(ctx)
-        elif isinstance(PvEbattle.getCurrentTurn(), type(PvEbattle.getPlayer())):
+        elif isinstance(PvEbattle.getCurrentTurn(), Player):
             await self.playerTurn(ctx)
 
     @commands.command(name='attack')
@@ -58,9 +59,12 @@ class PvEBattleInterface:
     @commands.command(name='run')
     async def run(self, ctx):
         battle = self.currentPvEBattles.get(ctx.author.id)
-        await ctx.send(f'run')
+        player = battle.getPlayer()
+        start_cog = self.bot.get_cog('Start')
+        await ctx.send(f'{ctx.author.name} has fled the battle!')
         
-        await self.endOfTurn(ctx)
+        await start_cog.updatePlayer(ctx, player)
+        await start_cog.updatePlayerState(ctx, f'main_menu')
 
     async def playerTurn(self, ctx):
         await ctx.send(f'It\'s {ctx.author.name}\'s turn.')
@@ -101,9 +105,9 @@ class PvEBattleInterface:
         if not battleHasEnded:
             battle.changeTurns()
             self.currentPvEBattles.update({ctx.author.id:battle})
-            if isinstance(battle.getCurrentTurn(), type(battle.getPlayer())):
+            if isinstance(battle.getCurrentTurn(), Player):
                 await self.playerTurn(ctx)
-            elif isinstance(battle.getCurrentTurn(), type(battle.getMob())):
+            elif isinstance(battle.getCurrentTurn(), Mob):
                 await self.mobTurn(ctx)
 
     async def checkBattleEnd(self, ctx, mob, player):
@@ -115,12 +119,11 @@ class PvEBattleInterface:
             player.decrease_gold(player.getGold() / 5)
             player.decrease_exp(player.getExp() / 5)
             player.setHp(player.getMaxHp())
-            #update player
+            
             await start_cog.updatePlayer(ctx, player)
             await start_cog.updatePlayerState(ctx, f'main_menu')
             return True
 
-            #somehow end the damn thing
         elif mob.getCurrentHp() <= 0:
             await ctx.send(f'Congratulations! {ctx.author.name} has won the battle!')
             await asyncio.sleep(1)
@@ -131,12 +134,9 @@ class PvEBattleInterface:
             player.increase_exp(mobExp)
             player.increase_gold(mobGold)
 
-            #update player
             await start_cog.updatePlayer(ctx, player)
             await start_cog.updatePlayerState(ctx, f'main_menu')
             return True
-
-            #somehow end the damn thing
         else:
             return False
 

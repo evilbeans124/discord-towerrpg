@@ -2,6 +2,9 @@ import os
 import discord
 import asyncio
 
+import json
+import io
+
 from cogs.Classes import Classes
 
 class Player:
@@ -35,75 +38,49 @@ class Player:
     class_id = None #0 = Hasn't chose 1 = Warrior 2 = Ranger 3 = Mage
     player_class = None #representation of the player's class. Not stored on the player's file. Will fix this later, right now i have no idea how lol
     message_author_id = None #client's id
-    current_tower_level = None #The level of the current tower its on
+    current_tower_level = None #The level of the current tower the client is on
 
-    def __init__(self, newUser, c, message_author_id):
-        if newUser:
-            self.current_hp = 50
-            self.max_hp = 50
-            self.current_mp = 10
-            self.max_mp = 10
-            self.gold = 100
-            self.experience = 0
-            self.experienceToLevel = 1000
-            self.level = 1
+    x_position = None
+    y_position = None
 
-            self.strength = 5
-            self.dexterity = 5
-            self.intellect = 5
+    def __init__(self, message_author_id):
+        with open(f'/Users/orion01px2018/Desktop/discord-towerrpg/player_files/{str(message_author_id)}.json') as data_file:
+            data = json.load(data_file)
 
-            self.hp_regen = 0
-            self.mp_regen = 0
-            self.spell_power = 5#not true though, edit based on class
-            self.attack_power = 5
-            self.physical_defense = 0
-            self.magical_defense = 0
-            self.speed = 5
-            self.accuracy = 0
-            self.parry_chance = 0
-            self.critical_chance = 0
-            self.critical_damage_multiplier = 0
-            self.block_chance = 0
-            self.dodge_chance = 0
-            
-            #self.player_class = Classes(0)
-            self.class_id = 0
-            self.message_author_id = message_author_id
-            self.current_tower_level = 1
-            
-            self.updateFile(self.message_author_id)
-        else:
-            self.current_hp = c[0]
-            self.max_hp = c[1]
-            self.current_mp = c[2]
-            self.max_mp = c[3]
-            self.gold = c[4]
-            self.experience = c[5]
-            self.experienceToLevel = c[6]
-            self.level = c[7]
+            #statistics
+            self.current_hp = data['statistics']['current_hp']
+            self.max_hp = data['statistics']['max_hp']
+            self.current_mp = data['statistics']['current_mp']
+            self.max_mp = data['statistics']['max_mp']
+            self.gold = data['statistics']['gold']
+            self.experience = data['statistics']['experience']
+            self.experienceToLevel = data['statistics']['experienceToLevel']
+            self.level = data['statistics']['level']
+            self.current_tower_level = data['statistics']['current_tower_level']
 
-            self.strength = c[8]
-            self.dexterity = c[9]
-            self.intellect = c[10]
+            #attributes
+            self.strength = data['attributes']['strength']
+            self.dexterity = data['attributes']['dexterity']
+            self.intellect = data['attributes']['intellect']
+            self.hp_regen = data['attributes']['hp_regen']
+            self.mp_regen = data['attributes']['mp_regen']
+            self.spell_power = data['attributes']['spell_power']
+            self.attack_power = data['attributes']['attack_power']
+            self.physical_defense = data['attributes']['physical_defense']
+            self.magical_defense = data['attributes']['magical_defense']
+            self.speed = data['attributes']['speed']
+            self.accuracy = data['attributes']['accuracy']
+            self.parry_chance = data['attributes']['accuracy']
+            self.critical_chance = data['attributes']['critical_chance']
+            self.critical_damage_multiplier = data['attributes']['critical_damage_multiplier']
+            self.block_chance = data['attributes']['block_chance']
+            self.dodge_chance = data['attributes']['dodge_chance']
 
-            self.hp_regen = c[11]
-            self.mp_regen = c[12]
-            self.spell_power = c[13]
-            self.attack_power = c[14]
-            self.physical_defense = c[15]
-            self.magical_defense = c[16]
-            self.speed = c[17]
-            self.accuracy = c[18]
-            self.parry_chance = c[19]
-            self.critical_chance = c[20]
-            self.critical_damage_multiplier = c[21]
-            self.block_chance = c[22]
-            self.dodge_chance = c[23]
-
- #           self.player_class = Classes(c[24])#wtf is this
-            self.class_id = c[24]
-            self.message_author_id = c[25]
-            self.current_tower_level = c[26]
+            #personal_no_display
+            self.class_id = data['personal_no_display']['class_id']
+            self.message_author_id = data['personal_no_display']['message_author_id']
+            self.x_position = data['personal_no_display']['coordinates'][0]
+            self.y_position = data['personal_no_display']['coordinates'][1]
 
     def getLevel(self):
         return self.level
@@ -132,11 +109,20 @@ class Player:
     def getExp(self):
         return self.experience
 
+    def getExpToLevel(self):
+        return self.experienceToLevel
+
     def getGold(self):
         return self.gold
 
     def getClassId(self):
         return self.class_id
+
+    def getXPos(self):
+        return self.x_position
+
+    def getYPos(self):
+        return self.y_position
 
     def setHp(self, hpToSet):
         self.current_hp = hpToSet
@@ -191,63 +177,44 @@ class Player:
 
     def getClass(self):
         return self.player_class
-
+    
     def updateFile(self, message_author_id):
-        filepath = os.path.join('/Users/orion01px2018/Desktop/discord-towerrpg/player_files/', str(message_author_id) + '.txt')
-        
-        f = open(filepath, "w+")
-        f.write(str(self.current_hp))
-        f.write("\r\n")
-        f.write(str(self.max_hp))
-        f.write("\r\n")
-        f.write(str(self.current_mp))
-        f.write("\r\n")
-        f.write(str(self.max_mp))
-        f.write("\r\n")
-        f.write(str(self.gold))
-        f.write("\r\n")
-        f.write(str(self.experience))
-        f.write("\r\n")
-        f.write(str(self.experienceToLevel))
-        f.write("\r\n")
-        f.write(str(self.level))
-        f.write("\r\n")
-        f.write(str(self.strength))
-        f.write("\r\n")
-        f.write(str(self.dexterity))
-        f.write("\r\n")
-        f.write(str(self.intellect))
-        f.write("\r\n")
-        f.write(str(self.hp_regen))
-        f.write("\r\n")
-        f.write(str(self.mp_regen))
-        f.write("\r\n")
-        f.write(str(self.spell_power))
-        f.write("\r\n")
-        f.write(str(self.attack_power))
-        f.write("\r\n")
-        f.write(str(self.physical_defense))
-        f.write("\r\n")
-        f.write(str(self.magical_defense))
-        f.write("\r\n")
-        f.write(str(self.speed))
-        f.write("\r\n")
-        f.write(str(self.accuracy))
-        f.write("\r\n")
-        f.write(str(self.parry_chance))
-        f.write("\r\n")
-        f.write(str(self.critical_chance))
-        f.write("\r\n")
-        f.write(str(self.critical_damage_multiplier))
-        f.write("\r\n")
-        f.write(str(self.block_chance))
-        f.write("\r\n")
-        f.write(str(self.dodge_chance))
-        f.write("\r\n")
-        f.write(str(self.class_id))
-        f.write("\r\n")
-        f.write(str(self.message_author_id))
-        f.write("\r\n")
-        f.write(str(self.current_tower_level))
-        f.write("\r\n")
-        f.close()
+        filepath = f'/Users/orion01px2018/Desktop/discord-towerrpg/player_files/{str(message_author_id)}'
+        try:
+            to_unicode = unicode
+        except NameError:
+            to_unicode = str
+
+        data = {'attributes': {'strength': self.strength,
+                               'dexterity': self.dexterity,
+                               'intellect': f'{str(self.intellect)}',
+                               'hp_regen': f'{str(self.hp_regen)}',
+                               'mp_regen': f'{str(self.mp_regen)}',
+                               'spell_power': f'{str(self.spell_power)}',
+                               'attack_power': f'{str(self.attack_power)}',
+                               'physical_defense': f'{str(self.physical_defense)}',
+                               'magical_defense': f'{str(self.magical_defense)}',
+                               'speed': f'{str(self.speed)}',
+                               'accuracy': f'{str(self.accuracy)}',
+                               'parry_chance': f'{str(self.parry_chance)}',
+                               'critical_chance': f'{str(self.critical_chance)}',
+                               'critical_damage_multiplier': f'{str(self.critical_damage_multiplier)}',
+                               'block_chance': f'{str(self.block_chance)}',
+                               'dodge_chance': f'{str(self.dodge_chance)}'},
+                'statistics': {'current_hp': f'{str(self.current_hp)}',
+                               'max_hp': f'{str(self.max_hp)}',
+                               'current_mp': f'{str(self.current_mp)}',
+                               'max_mp': f'{str(self.max_mp)}',
+                               'level': f'{str(self.level)}',
+                               'experience': f'{str(self.experience)}',
+                               'experienceToLevel': f'{str(self.experienceToLevel)}',
+                               'gold': f'{str(self.gold)}',
+                               'current_tower_level': f'{str(self.current_tower_level)}'},
+                'personal_no_display': {'class_id': f'{str(self.class_id)}',
+                               'message_author_id': f'{str(self.message_author_id)}',
+                               'coordinates': [self.x_position, self.y_position]}}
+
+        with io.open(f'{filepath}.json', 'w+', encoding='utf8') as outfile:
+            str_ = json.dumps(data, indent=4, sort_keys=True, separators=(',', ': '), ensure_ascii=False)
+            outfile.write(to_unicode(str_))
+    

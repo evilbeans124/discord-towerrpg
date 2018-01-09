@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import random
+import numpy as np
 
 from discord.ext import commands
 
@@ -8,9 +9,45 @@ class MainMenu:
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(name='map')
+    async def displayMap(self, ctx):
+        start_cog = self.bot.get_cog('Start')
+        player = await start_cog.getPlayer(ctx)
+
+        x_position = player.getXPos()
+        y_position = player.getYPos()
+        board = [['.'] * 10 for _ in range(10)]
+        board[x_position][y_position] = 'x'
+        
+        await ctx.send(f'```\n' +
+                       f'{self.convertMap(board)}\n' +
+                       f'```')
+
+    def convertMap(self, board):
+        string = ''
+        for row in board:
+            for val in row:
+                string += '{:6}'.format(val)
+            string += '\n'
+        return string
+
     @commands.command(name='stats')
     async def displayStats(self, ctx):
-        await ctx.send(f'no, bad!')
+        start_cog = self.bot.get_cog('Start')
+        player = await start_cog.getPlayer(ctx)
+        await ctx.send(f'```{ctx.author.name}\'s Stats ' +
+                       f'\nHP: {player.getCurrentHp()}/{player.getMaxHp()}' +
+                       f'\nMP: {player.getCurrentMp()}/{player.getMaxMp()}' +
+                       f'\nLevel: {player.getLevel()} ({player.getExp()}/{player.getExpToLevel()}) ' +
+                       f'\nGold: {player.getGold()}' +
+                       f'\nFor more details about your attributes, do !attributes' +
+                       f'```')
+
+    @commands.command(name='attributes')
+    async def displayAttributes(self, ctx):
+        start_cog = self.bot.get_cog('Start')
+        player = await start_cog.getPlayer(ctx)
+        await ctx.send(f'hi')
 
     @commands.command(name='battle')
     async def lookForBattle(self, ctx):
