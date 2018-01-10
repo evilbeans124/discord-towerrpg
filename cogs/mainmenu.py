@@ -18,18 +18,18 @@ class MainMenu:
         y_position = player.getYPos()
         board = [['.'] * 10 for _ in range(10)]
         board[x_position][y_position] = 'x'
+
+        def convertMap(self, board):
+            string = ''
+            for row in board:
+                for val in row:
+                    string += '{:6}'.format(val)
+                string += '\n'
+            return string
         
         await ctx.send(f'```\n' +
-                       f'{self.convertMap(board)}\n' +
+                       f'{convertMap(board)}\n' +
                        f'```')
-
-    def convertMap(self, board):
-        string = ''
-        for row in board:
-            for val in row:
-                string += '{:6}'.format(val)
-            string += '\n'
-        return string
 
     @commands.command(name='stats')
     async def displayStats(self, ctx):

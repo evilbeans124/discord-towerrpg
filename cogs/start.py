@@ -10,7 +10,6 @@ from cogs.Player import Player
 from cogs.Classes import Classes
 
 from cogs.Mob import Mob
-from cogs.mob.BoarClass import BoarClass
 
 class Start:    
     def __init__(self, bot):
@@ -29,8 +28,13 @@ class Start:
 
     @commands.command(name='classchoose')
     async def classChooseEvent(self, ctx, arg1):
-        if (not type(arg1)) == int and (not arg1.is_integer()) and (arg1 < 1 and arg1 > len(Classes.getAllClasses()) - 1):
-            ctx.send(f'{ctx.author.name}, you have inputted a wrong class id. Try again.')
+        def check_int(s):
+            if s[0] in ('-', '+'):
+                return s[1:].isdigit()
+            return s.isdigit()
+
+        if (not check_int(arg1) or int(arg1) < 1 or int(arg1) > len(Classes.getAllClasses()) - 1):
+            await ctx.send(f'{ctx.author.name}, you have inputted a wrong class id. Try again.')
         else:
             class_id = int(arg1)
             player = self.players.get(ctx.author.id)
@@ -41,7 +45,11 @@ class Start:
 
     @commands.command(name='classes')
     async def listClassesEvent(self, ctx):
-        await ctx.send(f'SOMETHING LOL')
+        await ctx.send(f'```ID    Name        Description\n\n' +
+                       f'1     Warrior     Tank and melee\n' +
+                       f'2     Ranger      Archer, Gunslinger, etc...\n' +
+                       f'3     Mage        Magic user class\n' +
+                       f'```')
 
     @commands.command(name='register')
     async def register(self, ctx):
